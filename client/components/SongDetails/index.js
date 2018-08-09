@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { Link } from 'react-router';
 import fetchSong from '../../queries/fetchSong.js';
+import LyricList from '../LyricList';
+
+import AddLyric from '../AddLyric';
 
 class SongDetails extends Component {
   render() {
     const { song, loading } = this.props.data;
-
-    const songTitle = loading
-      ? <h3> '...Loading'</h3>
-      : <h3> { song.title }</h3>;
+    if(!song) return <h3> '...Loading'</h3>
 
     return (
       <div>
@@ -18,7 +18,9 @@ class SongDetails extends Component {
           className='btn-floating btn-large green left'>
             <i className='material-icons'>keyboard_backspace</i>
         </Link>
-        { songTitle }
+        <h3> { song.title } </h3>
+        <LyricList lyrics={song.lyrics}/>
+        <AddLyric songId={this.props.params.id} />
       </div>
     )
   }
