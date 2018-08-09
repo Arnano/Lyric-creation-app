@@ -1,35 +1,60 @@
 import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
+import { Link, hashHistory } from 'react-router';
+import query from '../../queries/fetchSongs.js';
 import _ from 'lodash';
 
 class SongList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      songs: null
-    }
+  onDeleteSong(id) {
+    const { mutate, data } = this.props;
+
+    mutate({ variables: { id }})
+      .then(() => { data.refetch() });
   }
 
-  componentDidMount() {
-    const query = gql`
-      {
-        songs {
-          title
-        }
-      }
-    `;
-    this.setState({ songs: query });
+  createSongList() {
+    const { songs, loading } = this.props.data;
+    return loading
+      ? <li className='collection-item'>'...Loading'</li>
+      : _.map(songs, ({ id, title }) =>
+          <li key={id}
+            className='collection-item'>
+            <Link to={`songs/${id}`}>
+              { title }
+            </Link>
+            <i
+              className='material-icons btn-small'
+              onClick={() => this.onDeleteSong(id)}>
+                delete_forever
+            </i>
+          </li>);
   }
 
   render() {
     return(
-      { _.map() }
       <div>
-        Song lists: { this.state.songs }
+        <ul className='collection'>
+          { this.createSongList() }
+        </ul>
+        <Link
+          to='songs/new'
+          className='btn-floating btn-large green right'>
+            <i className='material-icons'>add</i>
+        </Link>
       </div>
     )
   }
 }
 
-export default SongList;
+const mutation = gql`
+  mutation DeleteSong($id: ID) {
+    deleteSong(id: $id) {
+      id
+    }
+  }
+`;
+
+export default graphql(mutation)(
+  graphql(query)(SongList)
+);
