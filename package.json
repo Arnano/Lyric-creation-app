@@ -1,11 +1,11 @@
 {
   "name": "lyrical",
   "version": "1.0.0",
-  "description": "Starter point for a graphQL course",
+  "description": "Graphql app for lyric creation per song",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/StephenGrider/Lyrical-GraphQL"
+    "url": "git@github.com:Arnano/Lyric-creation-app.git"
   },
   "scripts": {
     "dev": "nodemon index.js --ignore client"
